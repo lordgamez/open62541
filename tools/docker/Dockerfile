@@ -1,6 +1,6 @@
 # Build Stage (1/2)
 FROM alpine:3.13.6 AS build
-RUN apk add --no-cache cmake gcc git g++ musl-dev mbedtls-dev python3 py3-pip make && rm -rf /var/cache/apk/*
+RUN apk add --no-cache cmake gcc git g++ musl-dev mbedtls-dev python3 py3-pip make linux-headers && rm -rf /var/cache/apk/*
 COPY . /opt/open62541
 
 # Get all the git tags to make sure we detect the correct version with git describe
@@ -41,7 +41,7 @@ RUN --mount=src=/,dst=/artifacts,from=build \
     mkdir -p /opt/open62541/pki \
     && mkdir -p /usr/local/lib64/cmake/open62541 \
     && mkdir -p /usr/local/lib64/pkgconfig \
-    && mkdir -p /usr/local/share/open62541/tools \
+    && mkdir -p /usr/local/share/open62541 \
     && mkdir -p /usr/local/include/open62541 \
     && mkdir -p /usr/local/bin \
     && cp -r /artifacts/opt/open62541/pki/created /opt/open62541/pki/created \
@@ -49,15 +49,11 @@ RUN --mount=src=/,dst=/artifacts,from=build \
     && cp -r /artifacts/usr/local/lib64/libopen62541* /usr/local/lib64/ \
     && cp -r /artifacts/usr/local/lib64/cmake/open62541/ /usr/local/lib64/cmake/open62541/ \
     && cp -r /artifacts/usr/local/lib64/pkgconfig/open62541.pc /usr/local/lib64/pkgconfig/open62541.pc \
-    && cp -r /artifacts/usr/local/share/open62541/tools/certs /usr/local/share/open62541/tools/certs \
+    && cp -r /artifacts/usr/local/share/open62541/certs /usr/local/share/open62541/certs \
     && cp -r /artifacts/usr/local/include/open62541/ /usr/local/include/open62541/ \
-    && cp /artifacts/usr/local/include/ms_stdint.h /usr/local/include/ms_stdint.h \
-    && cp /artifacts/usr/local/include/ziptree.h /usr/local/include/ziptree.h \
-    && cp /artifacts/usr/local/include/aa_tree.h /usr/local/include/aa_tree.h \
-    && cp /artifacts/usr/local/bin/ua_server_ctt.exe /usr/local/bin/ua_server_ctt.exe \
     && cp /artifacts/usr/local/bin/ua_client /usr/local/bin/ua_client
 
 ENV LD_LIBRARY_PATH=/usr/local/lib64/
 
 EXPOSE 4840
-CMD ["/opt/open62541/examples/server_ctt" , "/opt/open62541/pki/created/server_cert.der", "/opt/open62541/pki/created/server_key.der", "--enableUnencrypted", "--enableAnonymous"]
+CMD ["/opt/open62541/examples/server_encryption" , "/opt/open62541/pki/created/server_cert.der", "/opt/open62541/pki/created/server_key.der", "/opt/open62541/pki/created/server_cert.der"]
