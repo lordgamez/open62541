@@ -277,7 +277,9 @@ typedef int SOCKET;
 
 #ifndef __ANDROID__
 #ifndef __APPLE__
+#ifdef __GLIBC__
 #include <bits/stdio_lim.h>
+#endif
 #endif /* !__APPLE__ */
 #endif /* !__ANDROID__ */
 

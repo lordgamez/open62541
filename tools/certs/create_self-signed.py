@@ -111,18 +111,18 @@ try:
         "-new", "-nodes", "-x509", "-sha256",
         "-newkey", f"rsa:{keysize}",
         "-keyout", "localhost.key",
-        "-days", "365",
+        "-days", "3650",
         "-subj", "/C=DE/L=Here/O=open62541/CN=open62541Server@localhost",
         "-out", "localhost.crt"
     ], check=True)
-    
+
     subprocess.run([
         "openssl", "x509",
         "-in", "localhost.crt",
         "-outform", "der",
         "-out", f"{certificatename}_cert.der"
     ], check=True)
-    
+
     subprocess.run([
         "openssl", "rsa",
         "-inform", "PEM",
@@ -130,7 +130,7 @@ try:
         "-outform", "DER",
         "-out", f"{certificatename}_key.der"
     ], check=True)
-    
+
 except subprocess.CalledProcessError as e:
     sys.exit(f'ERROR: OpenSSL command failed: {e}')
 

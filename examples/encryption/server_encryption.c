@@ -149,7 +149,7 @@ int main(int argc, char* argv[]) {
 
     if(!running)
         goto cleanup; /* received ctrl-c already */
-    
+
     retval = UA_Server_run(server, &running);
 
  cleanup:
